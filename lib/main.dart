@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './pages/homepage.dart';
+
 class TabbedAppBarSample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -12,12 +14,12 @@ class TabbedAppBarSample extends StatelessWidget {
   }
 }
 
-class HomePage extends StatefulWidget {
+class TabbarPage extends StatefulWidget {
   @override
-  _HomePageState createState() => new _HomePageState();
+  _TabbarPageState createState() => new _TabbarPageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _TabbarPageState extends State<TabbarPage> with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -43,12 +45,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: const Text('Tabbed AppBar'),
         bottom: TabBar(
+          indicatorColor: Colors.white,
           controller: _tabController,
           isScrollable: true,
           tabs: choices.map((Choice choice) {
             return Tab(
               text: choice.title,
-              icon: Icon(choice.icon),
             );
           }).toList(),
         ),
