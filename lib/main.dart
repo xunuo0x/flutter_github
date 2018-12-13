@@ -1,109 +1,111 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class TabbedAppBarSample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal
       ),
-      home: MyHomePage(),
+      home: HomePage()
     );
   }
 }
 
-class ItemCard extends StatelessWidget {
-
-  _getBottomItem(IconData icon, String text) {
-    return new Expanded(
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          new Icon(
-            icon,
-            color: Colors.grey,
-            size: 16.0,
-          ),
-          new Padding(
-            padding: EdgeInsets.only(left: 5.0),
-          ),
-          new Text(
-            text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.grey
-            ),
-          ),
-        ],
-      )
-    );
-  }
-  
-
+class HomePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new Card(
-      margin: const EdgeInsets.all(10.0),
-      child: FlatButton(
-        onPressed: (){
-          print('click');
-        },
-        child: new Column(
-          children: <Widget>[
-            new Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text('title', style: TextStyle(color: Colors.blueAccent, fontSize: 20.0),),
-            ),
-            new Padding(padding: EdgeInsets.all(10.0)),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                _getBottomItem(Icons.star, '1000'),
-                _getBottomItem(Icons.insert_link, '1000'),
-                _getBottomItem(Icons.subject, '1000'),
-              ],
-            ),
-            new Padding(padding: EdgeInsets.only(bottom: 5.0)),
-          ],
-        ),
-      ),
-    );
-  }
+  _HomePageState createState() => new _HomePageState();
 }
 
-class MyHomePage extends StatelessWidget {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState');
+    _tabController = new TabController(
+      vsync: this,     //动画效果的异步处理，默认格式，背下来即可
+      length: choices.length      //需要控制的Tab页数量
+    );    
+  }
+  //当整个页面dispose时，记得把控制器也dispose掉，释放内存
+  @override
+  void dispose() {
+    _tabController .dispose();
+    print('dispose');
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       appBar: AppBar(
-        leading: Icon(
-          Icons.list,
-          size: 32.0,
+        title: const Text('Tabbed AppBar'),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabs: choices.map((Choice choice) {
+            return Tab(
+              text: choice.title,
+              icon: Icon(choice.icon),
+            );
+          }).toList(),
         ),
       ),
-      body: Container(
-        child: ListView(
+      body: TabBarView(
+        controller: _tabController,
+        children: choices.map((Choice choice) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ChoiceCard(choice: choice),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class Choice {
+  const Choice({this.title, this.icon});
+
+  final String title;
+  final IconData icon;
+}
+
+const List<Choice> choices = const <Choice>[
+  const Choice(title: 'CAR', icon: Icons.directions_car),
+  const Choice(title: 'BICYCLE', icon: Icons.directions_bike),
+  const Choice(title: 'BOAT', icon: Icons.directions_boat),
+  const Choice(title: 'BUS', icon: Icons.directions_bus),
+  const Choice(title: 'TRAIN', icon: Icons.directions_railway),
+  const Choice(title: 'WALK', icon: Icons.directions_walk),
+];
+
+class ChoiceCard extends StatelessWidget {
+  const ChoiceCard({Key key, this.choice}) : super(key: key);
+
+  final Choice choice;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle textStyle = Theme.of(context).textTheme.display1;
+    return Card(
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            ItemCard()
+            Icon(choice.icon, size: 128.0, color: textStyle.color),
+            Text(choice.title, style: textStyle),
           ],
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(TabbedAppBarSample());
 }
