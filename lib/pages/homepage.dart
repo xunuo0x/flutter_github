@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+// components
 import '../components/sidebarDrawer.dart';
+// pages
 import './pageone.dart';
 import './pagetwo.dart';
 import './pagethree.dart';
+import './tabbarpage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -49,14 +52,30 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GGithub'),
+        title: Text(
+          'GGhub'
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          GestureDetector(
+            child: Icon(
+              Icons.search,
+            ),
+            onTap: () {
+              print('search');
+            },
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 14.0),
+          ),
+        ],
       ),
       drawer: new SidebarDraw(),
       body: new TabBarView(
         physics: new NeverScrollableScrollPhysics(),
         controller: _bottomTabController,
         children: [
-          new PageOne(),
+          new TabbarPage(),
           new PageTwo(),
           new PageThree(),
         ],
