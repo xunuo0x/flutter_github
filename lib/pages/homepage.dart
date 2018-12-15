@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 // components
 import '../components/sidebarDrawer.dart';
@@ -6,45 +7,66 @@ import '../components/sidebarDrawer.dart';
 import './pageone.dart';
 import './pagetwo.dart';
 import './pagethree.dart';
-import './tabbarpage.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-final List<Tab> _bottomTabs = <Tab>[
-  new Tab(
-    text: '动态',
-    icon: new Icon(Icons.camera)
-  ),    //icon和text的显示顺序已经内定，如需自定义，到child属性里面加吧
-  new Tab(
-    text: '趋势',
-    icon: new Icon(Icons.timeline)
+final List<BottomNavigationBarItem> _bottomTabs = <BottomNavigationBarItem>[
+  BottomNavigationBarItem(
+    icon: Icon(
+      Icons.camera
+    ),
+    title: Text(
+      '动态',
+      style: TextStyle(
+        fontSize: 12.0
+      ),
+    )
   ),
-  new Tab(
-    text: '我的',
-    icon: new Icon(Icons.person_outline)
+  BottomNavigationBarItem(
+    icon: Icon(
+      Icons.timeline
+    ),
+    title: Text('趋势',
+      style: TextStyle(
+          fontSize: 12.0
+      ),
+    )
   ),
+  BottomNavigationBarItem(
+    icon: Icon(
+      Icons.person_outline
+    ),
+    title: Text('我的',
+      style: TextStyle(
+          fontSize: 12.0
+        ),
+      )
+  )
 ];
+
+List<Widget> pages = List<Widget>(); 
 
 class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixin {
 
-  TabController _bottomTabController;
+  PageController _pageController;
+  int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-    _bottomTabController = new TabController(
-      vsync: this,     //动画效果的异步处理，默认格式，背下来即可
-      length: _bottomTabs.length      //需要控制的Tab页数量
-    );    
+    _currentIndex = 0;
+    _pageController = PageController(
+      initialPage: 0
+    );
   }
 
   //当整个页面dispose时，记得把控制器也dispose掉，释放内存
   @override
   void dispose() {
-    _bottomTabController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -53,7 +75,10 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'GGhub'
+          'GGhub',
+          style: TextStyle(
+            fontSize: 16.0
+          ),
         ),
         centerTitle: true,
         actions: <Widget>[
@@ -71,28 +96,40 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
         ],
       ),
       drawer: new SidebarDraw(),
-      body: new TabBarView(
+      body: new PageView(
         physics: new NeverScrollableScrollPhysics(),
-        controller: _bottomTabController,
+        controller: _pageController,
         children: [
-          new TabbarPage(),
+          new PageOne(),
           new PageTwo(),
           new PageThree(),
         ],
       ),
-      bottomNavigationBar: new Material(
-        color: Colors.white,
-        child: new TabBar(
-          labelColor: Colors.teal,
-          labelStyle: TextStyle(
-            fontSize: 12.0
-          ),
-          unselectedLabelColor: Colors.grey,
-          controller: _bottomTabController,
-          tabs: _bottomTabs,
-          indicatorColor: Colors.white
-        ),
-      ),
+      bottomNavigationBar: CupertinoTabBar(
+        activeColor: Colors.teal,
+        iconSize: 24,
+        currentIndex: _currentIndex,
+        items: _bottomTabs,
+        onTap: (int index) {
+          _pageController.jumpToPage(index);
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      )
+      // new Material(
+      //   color: Colors.white,
+      //   child: new TabBar(
+      //     labelColor: Colors.teal,
+      //     labelStyle: TextStyle(
+      //       fontSize: 12.0
+      //     ),
+      //     unselectedLabelColor: Colors.grey,
+      //     controller: _bottomTabController,
+      //     tabs: _bottomTabs,
+      //     indicatorColor: Colors.white
+      //   ),
+      // ),
     );
   }
 }

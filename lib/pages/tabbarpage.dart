@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
 class TabbarPage extends StatefulWidget {
+
+  final String appBarTitle;
+
+  TabbarPage({ Key key, this.appBarTitle }) : super(key: key);
+
   @override
-  _TabbarPageState createState() => new _TabbarPageState();
+  _TabbarPageState createState() => new _TabbarPageState(appBarTitle);
 }
 
 class _TabbarPageState extends State<TabbarPage> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  final String appBarTitle;
+  
+  _TabbarPageState(this.appBarTitle);
 
   @override
   void initState() {
@@ -20,7 +28,7 @@ class _TabbarPageState extends State<TabbarPage> with SingleTickerProviderStateM
   //当整个页面dispose时，记得把控制器也dispose掉，释放内存
   @override
   void dispose() {
-    _tabController .dispose();
+    _tabController.dispose();
     print('dispose');
     super.dispose();
   }
@@ -28,20 +36,27 @@ class _TabbarPageState extends State<TabbarPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: AppBar(
-            bottom: TabBar(
+      appBar: AppBar(
+          title: Text(
+            this.appBarTitle,
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),
+          centerTitle: true,
+          bottom: TabBar(
             indicatorColor: Colors.white,
             controller: _tabController,
             isScrollable: true,
+            labelStyle: TextStyle(
+              fontSize: 12.0
+            ),
             tabs: choices.map((Choice choice) {
               return Tab(
                 text: choice.title,
               );
             }).toList(),
           ),
-        ),
       ),
       body: TabBarView(
         controller: _tabController,
