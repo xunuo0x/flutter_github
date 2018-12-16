@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 // components
 import '../components/sidebarDrawer.dart';
 // pages
-import './pageone.dart';
+import './indexpage.dart';
 import './pagetwo.dart';
 import './pagethree.dart';
 
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
             },
           ),
           Padding(
-            padding: EdgeInsets.only(right: 14.0),
+            padding: EdgeInsets.only(right: 12.0),
           ),
         ],
       ),
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
         physics: new NeverScrollableScrollPhysics(),
         controller: _pageController,
         children: [
-          new PageOne(),
+          new IndexPage(),
           new PageTwo(),
           new PageThree(),
         ],
